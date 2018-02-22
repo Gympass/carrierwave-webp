@@ -8,6 +8,10 @@ module CarrierWave
       def convert_to_webp(options = {})
         manipulate! do |img|
           img          = yield(img) if block_given?
+
+          ext = File.extname(img.path)
+          return img if ['.png', '.jpg', '.jpeg'].exclude?(ext.downcase)
+
           webp_path    = "#{img.path}.webp"
           rgb_path    = "#{File.dirname(img.path)}/rgb_#{File.basename(img.path)}"
           old_filename = filename
