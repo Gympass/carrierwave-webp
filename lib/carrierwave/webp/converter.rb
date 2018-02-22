@@ -9,7 +9,7 @@ module CarrierWave
         manipulate! do |img|
           img          = yield(img) if block_given?
           webp_path    = "#{img.path}.webp"
-          rgb_path    = "#{img.path}.rgb"
+          rgb_path    = "#{File.dirname(img.path)}/rgb_#{File.basename(img.path)}"
           old_filename = filename
 
           begin
