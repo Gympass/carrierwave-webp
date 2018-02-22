@@ -11,7 +11,13 @@ module CarrierWave
           webp_path    = "#{img.path}.webp"
           old_filename = filename
 
-          ::WebP.encode(img.path, webp_path, options)
+          begin
+            ::WebP.encode(img.path, webp_path, options)
+          rescue
+            rgb_path    = "#{img.path}.rgb"
+            `convert -colorspace RGB #{img.path} #{rgb_path}`
+            ::WebP.encode(rgb_path, webp_path, options)
+          end
 
           # XXX: Hacks ahead!
           # I can't find any other way to store an alomost exact copy
