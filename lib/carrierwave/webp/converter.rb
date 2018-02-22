@@ -9,12 +9,12 @@ module CarrierWave
         manipulate! do |img|
           img          = yield(img) if block_given?
           webp_path    = "#{img.path}.webp"
+          rgb_path    = "#{img.path}.rgb"
           old_filename = filename
 
           begin
             ::WebP.encode(img.path, webp_path, options)
           rescue
-            rgb_path    = "#{img.path}.rgb"
             `convert -colorspace RGB #{img.path} #{rgb_path}`
             ::WebP.encode(rgb_path, webp_path, options)
           end
@@ -30,6 +30,7 @@ module CarrierWave
           })
 
           FileUtils.rm(webp_path) rescue nil
+          FileUtils.rm(rgb_path) rescue nil
 
           instance_variable_set('@filename', old_filename)
 
