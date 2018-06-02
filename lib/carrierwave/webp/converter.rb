@@ -14,8 +14,6 @@ module CarrierWave
 
           webp_path    = "#{img.path}.webp"
           rgb_path    = "#{File.dirname(img.path)}/rgb_#{File.basename(img.path)}"
-          old_filename = filename
-
           begin
             ::WebP.encode(img.path, webp_path, options)
           rescue
@@ -26,6 +24,7 @@ module CarrierWave
           # XXX: Hacks ahead!
           # I can't find any other way to store an alomost exact copy
           # of file for any particular version
+          # VF: this requires using the @webp variable in the filename function of the uploader
           instance_variable_set('@webp', ".webp")
 
           storage.store! SanitizedFile.new({
@@ -36,6 +35,7 @@ module CarrierWave
           FileUtils.rm(webp_path) rescue nil
           FileUtils.rm(rgb_path) rescue nil
 
+          # VF: this requires using the @webp variable in the filename function of the uploader
           instance_variable_set('@webp', "")
 
           img
